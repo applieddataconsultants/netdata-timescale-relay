@@ -10,7 +10,6 @@ on:
 jobs:
   release:
     runs-on: ${{ matrix.os }}
-    needs: before
     strategy:
       matrix:
         os:
