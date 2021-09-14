@@ -29,6 +29,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: netdata_tsrelay_linux_x64.zip
-          asset_name: netdata_tsrelay_${{ github.ref }}_linux_x64.zip
+          asset_name: netdata_tsrelay_${{ github.event.ref }}_linux_x64.zip
           tag: ${{ github.ref }}
           overwrite: true
