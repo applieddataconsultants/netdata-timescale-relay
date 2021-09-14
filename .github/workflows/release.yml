@@ -20,13 +20,6 @@ jobs:
         run: |
           nim -d:release --opt:speed --parallelBuild:0 --nimcache:.cache c netdata_tsrelay.nim
 
-      - name: Create artifact
-        shell: bash
-        run: zip netdata_tsrelay_${{steps.current-release.outputs.tag_name}}_linux_x64.zip netdata_tsrelay
-
-      - name: Print dir
-        run: ls
-
       - name: Get current release
         id: current-release
         uses: InsonusK/get-latest-release@v1.0.1
@@ -34,6 +27,13 @@ jobs:
           myToken: ${{ github.token }}
           exclude_types: 'release'
           view_top: 1
+
+      - name: Create artifact
+        shell: bash
+        run: zip netdata_tsrelay_${{steps.current-release.outputs.tag_name}}_linux_x64.zip netdata_tsrelay
+
+      - name: Print dir
+        run: ls
 
       - name: Upload to current release
         uses: xresloader/upload-to-github-release@v1
