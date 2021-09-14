@@ -5,21 +5,14 @@ on:
   push:
     tags:
       - '*'
-  pull_request:
 
 jobs:
   release:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macOS-latest
+    runs-on: ubuntu-latest
 
     steps:
-      # - name: Install packages
-      #   run: sudo apt-get install -y libpq-dev
+      - name: Install packages
+        run: sudo apt-get install -y libpq-dev
 
       - uses: actions/checkout@v2
       - uses: jiro4989/setup-nim-action@v1
@@ -28,14 +21,14 @@ jobs:
         run: |
           nim -d:release --opt:speed --parallelBuild:0 --nimcache:.cache c netdata_tsrelay.nim
 
-      # - name: Create artifact
-      #   run: zip netdata_tsrelay_linux_x64.zip netdata_tsrelay
+      - name: Create artifact
+        run: zip netdata_tsrelay_linux_x64.zip netdata_tsrelay
 
-      # - name: Upload binaries to release
-      #   uses: svenstaro/upload-release-action@v2
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: netdata_tsrelay_linux_x64.zip
-      #     asset_name: netdata_tsrelay_${{ github.event.ref }}_linux_x64.zip
-      #     tag: ${{ github.ref }}
-      #     overwrite: true
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: netdata_tsrelay_linux_x64.zip
+          asset_name: netdata_tsrelay_linux_x64.zip
+          tag: ${{ github.ref }}
+          overwrite: true
