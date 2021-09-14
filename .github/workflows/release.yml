@@ -2,8 +2,9 @@
 name: Add artifacts
 
 on:
-  workflow_dispatch:
-  pull_request:
+  push:
+    tags:
+      - '*'
 
 jobs:
   release:
@@ -20,28 +21,14 @@ jobs:
         run: |
           nim -d:release --opt:speed --parallelBuild:0 --nimcache:.cache c netdata_tsrelay.nim
 
-      - name: Get current release
-        id: current-release
-        uses: InsonusK/get-latest-release@v1.0.1
-        with:
-          myToken: ${{ github.token }}
-          exclude_types: 'release'
-          view_top: 1
-
       - name: Create artifact
-        shell: bash
-        run: zip netdata_tsrelay_${{steps.current-release.outputs.tag_name}}_linux_x64.zip netdata_tsrelay
+        run: zip netdata_tsrelay_linux_x64.zip netdata_tsrelay
 
-      - name: Print dir
-        run: ls
-
-      - name: Upload to current release
-        uses: xresloader/upload-to-github-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          file: 'netdata_tsrelay_v*.zip'
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: netdata_tsrelay_linux_x64.zip
+          asset_name: netdata_tsrelay_${{ github.ref }}_linux_x64.zip
+          tag: ${{ github.ref }}
           overwrite: true
-          tag_name: ${{steps.current-release.outputs.tag_name}}
-          release_id: ${{steps.current-release.outputs.id }}
-          verbose: true
